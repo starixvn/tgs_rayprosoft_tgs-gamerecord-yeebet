@@ -19,8 +19,7 @@ data:
         "LockMinute": 10
       },
       "GameRecord": {
-        "GameCommandClientBaseUrl": "http://game-gamecommand/",
-        "GameRoundsServiceBaseUrl": "http://game-gamerounds/",
+        "GameCommandClientBaseUrl": "http://game-gamecommand/",        
         "GameInterfaceBaseUrl": "http://game-gameinterface-yeebet:9090/"
       }
     }

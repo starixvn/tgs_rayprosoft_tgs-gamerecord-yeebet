@@ -7,8 +7,6 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Tgs.GameRecord.YeeBet;
 using Tgs.GameRecord.YeeBet.Core;
-using Tgs.MessageQueue.MongoDB.Configuration;
-using MongoMessageQueue = MongoDB.Messaging.MessageQueue;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,17 +59,7 @@ builder.Services.AddGameRecordCore(
     (options, sp) =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
-        configuration.GetSection("MongoSetting").Bind(options);
-    },
-    (options, sp) =>
-    {
-        var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameRecord:GameCommandClientBaseUrl")!;
-    },
-    (options, sp) =>
-    {
-        var configuration = sp.GetRequiredService<IConfiguration>();
-        options.BaseUrl = configuration.GetValue<Uri>("GameRecord:GameRoundsServiceBaseUrl")!;
     },
     (options, sp) =>
     {
@@ -79,22 +67,10 @@ builder.Services.AddGameRecordCore(
         options.BaseUrl = configuration.GetValue<Uri>("GameRecord:GameInterfaceBaseUrl")!;
     });
 
-var mongoSetting = builder.Configuration.GetSection("MongoSetting").Get<MongoSettingOptions>()!;
 var natsSetting = builder.Configuration.GetSection("NatsSetting").Get<NatsSettingOptions>()!;
 
 builder.Services
     .AddMessageQueue()
-    .AddMongoMessageQueue(config =>
-    {
-        _ = config
-        .DefineMessageQueue(
-            mongoSetting.ManagerName,
-            sp => new MongoMessageQueueBuilderOptions
-            {
-                MessageQueue = MongoMessageQueue.Default,
-                ConnectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("MongoMessaging")!
-            });
-    })
     .AddNatsMessageQueue(natsConfig =>
     {
         _ = natsConfig
@@ -106,7 +82,7 @@ builder.Services
         .AddHandler<ScheduleMessageHandler>(natsSetting.Subject, natsSetting.Group);
     })
     .ClearAllExchanges()
-    .AddMongoGlobPatternExchange(mongoSetting.GlobPattern, mongoSetting.ManagerName, mongoSetting.QueueName);
+    .AddNatsGlobPatternExchange("*");
 
 builder.Services
     .AddOpenTelemetry()
