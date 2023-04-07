@@ -9,11 +9,11 @@ namespace Tgs.GameRecord.YeeBet.Messages;
 internal class ManualMessageHandler : IMessageProcessor
 {
     private readonly ILogger<ManualMessageHandler> _logger;
-    private readonly ICommandService<ManualWorkCommand> _service;
+    private readonly ICommandService<ManualWorkerCommand> _service;
 
     public ManualMessageHandler(
         ILogger<ManualMessageHandler> logger,
-        ICommandService<ManualWorkCommand> service)
+        ICommandService<ManualWorkerCommand> service)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -32,7 +32,7 @@ internal class ManualMessageHandler : IMessageProcessor
 
         _logger.LogInformation("Information Received:{LogInfo}", message);
 
-        await _service.ExecuteAsync(new ManualWorkCommand(
+        await _service.ExecuteAsync(new ManualWorkerCommand(
             ApiUrl: message.ApiUrl,
             AppId: message.AppId,
             SecretKey: message.SecretKey,

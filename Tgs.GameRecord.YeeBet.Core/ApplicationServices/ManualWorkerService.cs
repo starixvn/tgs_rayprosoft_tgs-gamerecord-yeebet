@@ -5,14 +5,14 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 
-internal class ManualWorkService : ICommandService<ManualWorkCommand>
+internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
 {
     private readonly IGameInterfaceYeeBetClient _client;
-    private readonly ILogger<ManualWorkService> _logger;
+    private readonly ILogger<ManualWorkerService> _logger;
     private readonly ICommandService<GamePullRecordCommand> _settledService;
 
-    public ManualWorkService(
-        ILogger<ManualWorkService> logger,
+    public ManualWorkerService(
+        ILogger<ManualWorkerService> logger,
         IGameInterfaceYeeBetClient client,
         ICommandService<GamePullRecordCommand> settledService)
     {
@@ -21,7 +21,7 @@ internal class ManualWorkService : ICommandService<ManualWorkCommand>
         _settledService = settledService ?? throw new ArgumentNullException(nameof(settledService));
     }
 
-    public async ValueTask ExecuteAsync(ManualWorkCommand command, CancellationToken cancellationToken = default)
+    public async ValueTask ExecuteAsync(ManualWorkerCommand command, CancellationToken cancellationToken = default)
     {
         var pageIndex = 0;
         var pageSize = 2000;

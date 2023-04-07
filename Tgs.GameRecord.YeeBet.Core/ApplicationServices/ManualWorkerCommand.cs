@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
-public record ManualWorkCommand(
+public record ManualWorkerCommand(
     Uri ApiUrl,
     string AppId,
     string SecretKey,
