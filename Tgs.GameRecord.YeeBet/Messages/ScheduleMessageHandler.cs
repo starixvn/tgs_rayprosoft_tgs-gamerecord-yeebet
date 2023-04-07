@@ -4,7 +4,7 @@ using Tgs.GameRecord.YeeBet.Core.DispatchServices;
 using Tgs.MessageQueue;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameRecord.YeeBet;
+namespace Tgs.GameRecord.YeeBet.Messages;
 
 internal class ScheduleMessageHandler : IMessageHandler
 {

@@ -5,8 +5,8 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Tgs.GameRecord.YeeBet;
 using Tgs.GameRecord.YeeBet.Core;
+using Tgs.GameRecord.YeeBet.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,8 +67,6 @@ builder.Services.AddGameRecordCore(
         options.BaseUrl = configuration.GetValue<Uri>("GameRecord:GameInterfaceBaseUrl")!;
     });
 
-var natsSetting = builder.Configuration.GetSection("NatsSetting").Get<NatsSettingOptions>()!;
-
 builder.Services
     .AddMessageQueue()
     .AddNatsMessageQueue(natsConfig =>
@@ -79,7 +77,7 @@ builder.Services
             var configuration = sp.GetRequiredService<IConfiguration>();
             options.Url = configuration.GetConnectionString("Nats")!;
         })
-        .AddHandler<ScheduleMessageHandler>(natsSetting.Subject, natsSetting.Group);
+        .AddHandler<ScheduleMessageHandler>("gp.gamerecord.schedule.yeebet", "gp.gamerecord.schedule");
     })
     .ClearAllExchanges()
     .AddNatsGlobPatternExchange("*");

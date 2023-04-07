@@ -11,7 +11,7 @@
 		<PackageReference Include="StackExchange.Redis" Version="2.6.90" />
 		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.7" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />		
-		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.3" />		
+		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.5" />		
 		<PackageReference Include="Tgs.GameRounds.Work.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameRounds.Work.Manual.Client" Version="0.0.3" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="2.3.0" />

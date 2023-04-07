@@ -4,21 +4,20 @@ using NSubstitute;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameInterface.YeeBet.Protos;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
-using Tgs.GameRecord.YeeBet.Core.WorkerServices;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.YeeBet.Core.UnitTest;
 
-public class GameHistoryWorkerServiceUnitTest
+public class ScheduleWorkerServiceUnitTest
 {
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<GameHistoryWorkerService>.Instance;
+        var fakeLogger = NullLogger<ScheduleWorkerService>.Instance;
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
         var fakeService = Substitute.For<ICommandService<GamePullRecordCommand>>();
 
-        var command = new GameHistoryWorkerCommand(
+        var command = new ScheduleWorkerCommand(
             ApiUrl: new("http://api.98kbus.top/"),
             AppId: "xtdA15OTVGEP",
             SecretKey: "298511c51d785332d8d279998b79cd3c");
@@ -46,22 +45,20 @@ public class GameHistoryWorkerServiceUnitTest
                 Arg.Is(command.ApiUrl),
                 Arg.Is(command.AppId),
                 Arg.Is(command.SecretKey),
-                1000,
-                Arg.Any<CancellationToken>()
+                2000
             ).Returns(gameRecords.ToAsyncEnumerable());
 
-        var service = new GameHistoryWorkerService(
+        var sut = new ScheduleWorkerService(
             fakeLogger,
             fakeClient,
             fakeService);
 
-        await service.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command).ConfigureAwait(false);
 
         await fakeService
             .Received(1)
             .ExecuteAsync(
-                Arg.Any<GamePullRecordCommand>(),
-                cancellationToken: Arg.Any<CancellationToken>())
+                Arg.Any<GamePullRecordCommand>())
             .ConfigureAwait(false);
 
         _ = await fakeClient
@@ -70,8 +67,7 @@ public class GameHistoryWorkerServiceUnitTest
                 apiUrl: Arg.Is(command.ApiUrl),
                 appId: Arg.Is(command.AppId),
                 secretKey: Arg.Is(command.SecretKey),
-                externalRoundIds: Arg.Any<string[]>(),
-               cancellationToken: Arg.Any<CancellationToken>())
+                externalRoundIds: Arg.Any<string[]>())
              .ConfigureAwait(false);
     }
 }

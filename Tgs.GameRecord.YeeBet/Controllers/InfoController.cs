@@ -18,12 +18,10 @@ public class InfoController : ControllerBase
     public object Get()
     {
         var gameRecordInfo = _configuration.GetSection("GameRecordInfo").Get<GameRecordInfoOptions>();
-        var natsSetting = _configuration.GetSection("NatsSetting").Get<NatsSettingOptions>();
 
         return new
         {
-            gameRecordInfo,
-            natsSetting
+            gameRecordInfo
         };
     }
 }

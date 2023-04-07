@@ -1,4 +1,4 @@
-﻿namespace Tgs.GameRecord.YeeBet;
+﻿namespace Tgs.GameRecord.YeeBet.Messages;
 
 public record ScheduleMessageModel(
     Uri ApiUrl,
