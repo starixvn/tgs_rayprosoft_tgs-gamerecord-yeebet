@@ -15,7 +15,7 @@ public class ScheduleWorkerServiceUnitTest
     {
         var fakeLogger = NullLogger<ScheduleWorkerService>.Instance;
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
-        var fakeService = Substitute.For<ICommandService<GamePullRecordCommand>>();
+        var fakeService = Substitute.For<ICommandService<SchedulePullRecordCommand>>();
 
         var command = new ScheduleWorkerCommand(
             ApiUrl: new("http://api.98kbus.top/"),
@@ -58,7 +58,7 @@ public class ScheduleWorkerServiceUnitTest
         await fakeService
             .Received(1)
             .ExecuteAsync(
-                Arg.Any<GamePullRecordCommand>())
+                Arg.Any<SchedulePullRecordCommand>())
             .ConfigureAwait(false);
 
         _ = await fakeClient

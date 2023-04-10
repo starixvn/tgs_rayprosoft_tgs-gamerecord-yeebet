@@ -9,12 +9,12 @@ internal class ScheduleWorkerService : ICommandService<ScheduleWorkerCommand>
 {
     private readonly IGameInterfaceYeeBetClient _client;
     private readonly ILogger<ScheduleWorkerService> _logger;
-    private readonly ICommandService<GamePullRecordCommand> _settledService;
+    private readonly ICommandService<SchedulePullRecordCommand> _settledService;
 
     public ScheduleWorkerService(
         ILogger<ScheduleWorkerService> logger,
         IGameInterfaceYeeBetClient client,
-        ICommandService<GamePullRecordCommand> settledService)
+        ICommandService<SchedulePullRecordCommand> settledService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -44,7 +44,7 @@ internal class ScheduleWorkerService : ICommandService<ScheduleWorkerCommand>
 
             await _settledService
                 .ExecuteAsync(
-                    command: new GamePullRecordCommand(
+                    command: new SchedulePullRecordCommand(
                         Records: gameHistorys),
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);

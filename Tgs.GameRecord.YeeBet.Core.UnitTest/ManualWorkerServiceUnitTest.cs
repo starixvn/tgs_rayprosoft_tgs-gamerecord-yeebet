@@ -15,7 +15,7 @@ public class ManualWorkerServiceUnitTest
     {
         var fakeLogger = NullLogger<ManualWorkerService>.Instance;
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
-        var fakeService = Substitute.For<ICommandService<GamePullRecordCommand>>();
+        var fakeService = Substitute.For<ICommandService<ManualPullRecordCommand>>();
 
         var command = new ManualWorkerCommand(
             ApiUrl: new("http://api.98kbus.top/"),
@@ -68,7 +68,7 @@ public class ManualWorkerServiceUnitTest
         await fakeService
             .Received(1)
             .ExecuteAsync(
-                Arg.Any<GamePullRecordCommand>())
+                Arg.Any<ManualPullRecordCommand>())
             .ConfigureAwait(false);
     }
 }

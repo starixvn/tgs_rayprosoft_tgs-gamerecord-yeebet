@@ -1,22 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Tgs.GameRounds.Work.Client;
-using Tgs.GameRounds.Work.Common.Protos;
+using Tgs.GameRounds.Work.Manual.Client;
+using Tgs.GameRounds.Work.Manual.Common.Protos;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 
-internal class GamePullRecordCommandService : ICommandService<GamePullRecordCommand>
+internal class ManualPullRecordCommandService : ICommandService<ManualPullRecordCommand>
 {
-    private readonly IGameRoundsWorkClient _client;
+    private readonly IGameRoundsWorkManualClient _client;
     private readonly GameRecordInfoOptions _gameRecordInfo;
-    private readonly ILogger<GamePullRecordCommandService> _logger;
+    private readonly ILogger<ManualPullRecordCommandService> _logger;
     private readonly IUtensil _utensil;
 
-    public GamePullRecordCommandService(
-        ILogger<GamePullRecordCommandService> logger,
+    public ManualPullRecordCommandService(
+        ILogger<ManualPullRecordCommandService> logger,
         IOptions<GameRecordInfoOptions> gameRecordInfoOptions,
-        IGameRoundsWorkClient client,
+        IGameRoundsWorkManualClient client,
         IUtensil utensil)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -25,7 +25,7 @@ internal class GamePullRecordCommandService : ICommandService<GamePullRecordComm
         _utensil = utensil ?? throw new ArgumentNullException(nameof(utensil));
     }
 
-    public async ValueTask ExecuteAsync(GamePullRecordCommand command, CancellationToken cancellationToken = default)
+    public async ValueTask ExecuteAsync(ManualPullRecordCommand command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _utensil
             .GetGameProviderIdAsync(
@@ -66,7 +66,7 @@ internal class GamePullRecordCommandService : ICommandService<GamePullRecordComm
                     gameProviderId: gameProviderId,
                     gameExternalId: record.ExternalGameId,
                     cancellationToken: cancellationToken)
-                .ConfigureAwait(false);                                    
+                .ConfigureAwait(false);
 
             if (success)
             {

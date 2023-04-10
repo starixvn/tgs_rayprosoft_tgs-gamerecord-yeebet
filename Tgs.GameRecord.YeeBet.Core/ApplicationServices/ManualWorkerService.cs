@@ -9,12 +9,12 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
 {
     private readonly IGameInterfaceYeeBetClient _client;
     private readonly ILogger<ManualWorkerService> _logger;
-    private readonly ICommandService<GamePullRecordCommand> _settledService;
+    private readonly ICommandService<ManualPullRecordCommand> _settledService;
 
     public ManualWorkerService(
         ILogger<ManualWorkerService> logger,
         IGameInterfaceYeeBetClient client,
-        ICommandService<GamePullRecordCommand> settledService)
+        ICommandService<ManualPullRecordCommand> settledService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -50,7 +50,7 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
 
         await _settledService
             .ExecuteAsync(
-                command: new GamePullRecordCommand(
+                command: new ManualPullRecordCommand(
                     Records: reply.Items),
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -61,7 +61,7 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
 
             await _settledService
             .ExecuteAsync(
-                command: new GamePullRecordCommand(
+                command: new ManualPullRecordCommand(
                     Records: reply.Items),
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

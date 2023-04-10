@@ -5,12 +5,12 @@ using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.YeeBet.Protos;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
-using Tgs.GameRounds.Work.Client;
-using Tgs.GameRounds.Work.Common.Protos;
+using Tgs.GameRounds.Work.Manual.Client;
+using Tgs.GameRounds.Work.Manual.Common.Protos;
 
 namespace Tgs.GameRecord.YeeBet.Core.UnitTest;
 
-public class GamePullRecordCommandServiceUnitTest
+public class ManualPullRecordCommandServiceUnitTest
 {
     [Fact]
     public async Task Normal_Process()
@@ -22,11 +22,11 @@ public class GamePullRecordCommandServiceUnitTest
             LockMinute = 10
         });
 
-        var fakeLogger = NullLogger<GamePullRecordCommandService>.Instance;
-        var fakeGameRoundsWorkClient = Substitute.For<IGameRoundsWorkClient>();
+        var fakeLogger = NullLogger<ManualPullRecordCommandService>.Instance;
+        var fakeGameRoundsWorkClient = Substitute.For<IGameRoundsWorkManualClient>();
         var fakeUtensil = Substitute.For<IUtensil>();
 
-        var command = new GamePullRecordCommand(
+        var command = new ManualPullRecordCommand(
             Records: new GameRecordInfo[] {
             new GameRecordInfo()
             {
@@ -42,7 +42,7 @@ public class GamePullRecordCommandServiceUnitTest
                 Turnover = 0,
                 Settle = 60,
                 AdditionalData = string.Empty,
-                ExternalGameId = "12"                
+                ExternalGameId = "12"
             }});
 
         var gameProviderId = Guid.NewGuid();
@@ -76,7 +76,7 @@ public class GamePullRecordCommandServiceUnitTest
                 Arg.Any<CancellationToken>())
             .Returns(gameId);
 
-        var service = new GamePullRecordCommandService(
+        var service = new ManualPullRecordCommandService(
             fakeLogger,
             fakeOptions,
             fakeGameRoundsWorkClient,
