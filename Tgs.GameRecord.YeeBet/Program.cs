@@ -77,7 +77,8 @@ builder.Services
             var configuration = sp.GetRequiredService<IConfiguration>();
             options.Url = configuration.GetConnectionString("Nats")!;
         })
-        .AddHandler<ScheduleMessageHandler>("gp.gamerecord.schedule.yeebet", "gp.gamerecord.schedule");
+        .AddHandler<ScheduleMessageHandler>("gp.gamerecord.schedule.yeebet", "gp.gamerecord.schedule")
+        .AddProcessor<ManualMessageHandler>("gp.gamerecord.manual.yeebet", "gp.gamerecord.manual");
     })
     .ClearAllExchanges()
     .AddNatsGlobPatternExchange("*");
