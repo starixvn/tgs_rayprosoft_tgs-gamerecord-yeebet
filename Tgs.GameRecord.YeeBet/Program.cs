@@ -5,7 +5,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Tgs.GameRecord.YeeBet.Core;
 using Tgs.GameRecord.YeeBet.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +42,14 @@ builder.Services
     });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
+    foreach (var xmlFileName in xmlFileNames)
+    {
+        c.IncludeXmlComments(xmlFileName);
+    }
+});
 
 builder.Services.AddGameRecordCore(
     (options, sp) =>
@@ -78,7 +84,7 @@ builder.Services
             options.Url = configuration.GetConnectionString("Nats")!;
         })
         .AddHandler<ScheduleMessageHandler>("gp.gamerecord.schedule.yeebet", "gp.gamerecord.schedule")
-        .AddProcessor<ManualMessageHandler>("gp.gamerecord.manual.yeebet", "gp.gamerecord.manual");
+        .AddProcessor<ManualMessageHandler>(subject: "gp.gamerecord.manual.yeebet", queue: "gp.gamerecord.manual");
     })
     .ClearAllExchanges()
     .AddNatsGlobPatternExchange("*");
@@ -86,8 +92,7 @@ builder.Services
 builder.Services
     .AddOpenTelemetry()
     .WithTracing(builder => builder
-        .SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddEnvironmentVariableDetector())
+        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddEnvironmentVariableDetector())
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
         .AddAspNetCoreInstrumentation()
@@ -97,8 +102,7 @@ builder.Services
         .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
         .AddOtlpExporter())
     .WithMetrics(meterBuiler => meterBuiler
-    .SetResourceBuilder(ResourceBuilder.CreateDefault()
-    .AddEnvironmentVariableDetector())
+    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddEnvironmentVariableDetector())
     .AddRuntimeInstrumentation()
     .AddAspNetCoreInstrumentation()
     .AddOtlpExporter())

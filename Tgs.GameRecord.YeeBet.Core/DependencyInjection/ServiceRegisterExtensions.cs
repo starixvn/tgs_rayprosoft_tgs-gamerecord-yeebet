@@ -14,10 +14,13 @@ public static class ServiceRegisterExtensions
         {
             var gameRecordInfo = app.Configuration.GetSection("GameRecordInfo").Get<GameRecordInfoOptions>();
             var utensil = scope.ServiceProvider.GetRequiredService<IUtensil>();
-            var gameProviderId = await utensil.GetGameProviderIdAsync().ConfigureAwait(false);
-            var clinet = scope.ServiceProvider.GetRequiredService<IGameCommandClient>();
 
-            var games = await clinet
+            var gameProviderId = await utensil
+                .GetGameProviderIdAsync()
+                .ConfigureAwait(false);
+            var client = scope.ServiceProvider.GetRequiredService<IGameCommandClient>();            
+            
+            var games = await client
                 .GameQueryAsync(gameRecordInfo!.GameProviderCode)
                 .ToArrayAsync()
                 .ConfigureAwait(false)
@@ -26,10 +29,10 @@ public static class ServiceRegisterExtensions
             foreach (var game in games)
             {
                 _ = await utensil
-                        .GetGameIdAsync(
-                            gameProviderId,
-                            game.GameExternalId)
-                        .ConfigureAwait(false);
+                    .GetGameIdAsync(
+                        gameProviderId,
+                        game.GameExternalId)
+                    .ConfigureAwait(false);
             }
         }
 

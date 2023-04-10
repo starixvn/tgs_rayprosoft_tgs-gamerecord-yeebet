@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
         Action<RedisOptions, IServiceProvider> redisDBconfigure,
         Action<GameRecordInfoOptions, IServiceProvider> gameRecordInfoOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
-        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions)
+        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(redisDBconfigure)
@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
             .AddMemoryCache()
             .AddSingleton<RedisConnectionManager>()
             .AddGameCommandClient(gameCommandClientOptions)
-            .AddGameInterfaceYeeBetClient(gameInterfaceDreamGamingClientOptions)
+            .AddGameInterfaceYeeBetClient(gameInterfaceYeeBetClientOptions)
             .AddGameRoundsWorkClient()
             .AddGameRoundsWorkManualClient()
             .AddTransient<IScheduleDispatch>(sp => ActivatorUtilities.CreateInstance<ScheduleDispatch>(sp, sp.GetRequiredService<RedisConnectionManager>().Database))

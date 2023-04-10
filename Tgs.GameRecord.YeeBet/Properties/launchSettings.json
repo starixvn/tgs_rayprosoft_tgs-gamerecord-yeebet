@@ -32,6 +32,18 @@
         "OTEL_SERVICE_NAME": "Game-GameRecord-YeeBet(local)",
         "NODE_IP": "otel.rpgp.cc"
       }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "publishAllPorts": true,
+      "useSSL": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OTEL_SERVICE_NAME": "Game-Gamerecord-YeeBet(local)",
+        "NODE_IP": "otel.rpgp.cc"
+      }
     }
   }
 }
