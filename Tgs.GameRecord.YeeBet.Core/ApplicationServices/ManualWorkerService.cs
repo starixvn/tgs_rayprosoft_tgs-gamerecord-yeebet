@@ -26,6 +26,10 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
         var pageIndex = 0;
         var pageSize = 2000;
 
+        _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
+            DateTime.UtcNow.ToString("O"),
+            JsonSerializer.Serialize(command));
+
         var reply = await _client
             .GameRecordInquireAsync(
                 command.ApiUrl,
@@ -38,9 +42,9 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
                 cancellationToken)
             .ConfigureAwait(false);
 
-        _logger.LogInformation("LogOn:{logOn} | Action:GameRecordAsync | Response:{response}",
-                DateTime.UtcNow.ToString("O"),
-                JsonSerializer.Serialize(reply));
+        _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Response:{response}",
+            DateTime.UtcNow.ToString("O"),
+            JsonSerializer.Serialize(reply));
 
         if (reply is null)
             return;
@@ -57,7 +61,34 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
 
         while ((pageIndex + 1) * pageSize < reply.Total)
         {
+            _logger.LogInformation("pageIndex:{pageIndex},pageSize:{pageSize}, reply.Total:{total}", pageIndex, pageSize, reply.Total);
             pageIndex++;
+
+            _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
+                DateTime.UtcNow.ToString("O"),
+                JsonSerializer.Serialize(new 
+                {  
+                    command.BeginTime,
+                    command.EndTime,
+                    pageIndex,
+                    pageSize,
+                }));
+
+            reply = await _client
+                .GameRecordInquireAsync(
+                    command.ApiUrl,
+                    command.AppId,
+                    command.SecretKey,
+                    command.BeginTime,
+                    command.EndTime,
+                    pageSize: pageSize,
+                    pageIndex: pageIndex,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync |  Response:{response}",
+                DateTime.UtcNow.ToString("O"),
+                JsonSerializer.Serialize(reply));
 
             await _settledService
             .ExecuteAsync(
