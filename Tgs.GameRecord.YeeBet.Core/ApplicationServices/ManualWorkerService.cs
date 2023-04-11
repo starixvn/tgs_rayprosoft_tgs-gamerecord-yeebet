@@ -24,7 +24,7 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
     public async ValueTask ExecuteAsync(ManualWorkerCommand command, CancellationToken cancellationToken = default)
     {
         var pageIndex = 0;
-        var pageSize = 2000;
+        var pageSize = 3;
 
         _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
             DateTime.UtcNow.ToString("O"),
