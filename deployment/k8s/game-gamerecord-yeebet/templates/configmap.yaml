@@ -10,7 +10,7 @@ data:
     {
       "Logging": {
          "LogLevel": {
-          "Default": "Information"
+          "Default": "Warning"
           }
       },
       "GameRecordInfo": {
