@@ -24,11 +24,20 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
     public async ValueTask ExecuteAsync(ManualWorkerCommand command, CancellationToken cancellationToken = default)
     {
         var pageIndex = 0;
-        var pageSize = 3;
+        var pageSize = 4;
 
         _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
             DateTime.UtcNow.ToString("O"),
-            JsonSerializer.Serialize(command));
+            JsonSerializer.Serialize(new
+            {
+                command.ApiUrl,
+                command.AppId,
+                command.SecretKey,
+                command.BeginTime,
+                command.EndTime,
+                pageIndex,
+                pageSize
+            }));
 
         var reply = await _client
             .GameRecordInquireAsync(
@@ -61,17 +70,19 @@ internal class ManualWorkerService : ICommandService<ManualWorkerCommand>
 
         while ((pageIndex + 1) * pageSize < reply.Total)
         {
-            _logger.LogInformation("pageIndex:{pageIndex},pageSize:{pageSize}, reply.Total:{total}", pageIndex, pageSize, reply.Total);
             pageIndex++;
 
             _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
                 DateTime.UtcNow.ToString("O"),
-                JsonSerializer.Serialize(new 
-                {  
+                JsonSerializer.Serialize(new
+                {
+                    command.ApiUrl,
+                    command.AppId,
+                    command.SecretKey,
                     command.BeginTime,
                     command.EndTime,
-                    pageIndex,
                     pageSize,
+                    pageIndex,
                 }));
 
             reply = await _client
