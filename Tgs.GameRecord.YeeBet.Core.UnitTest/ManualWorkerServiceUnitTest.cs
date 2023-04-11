@@ -54,7 +54,7 @@ public class ManualWorkerServiceUnitTest
                 secretKey: Arg.Is(command.SecretKey),
                 beginTime: Arg.Is(command.BeginTime),
                 endTime: Arg.Is(command.EndTime),
-                pageSize: 2000,
+                pageSize: 3,
                 pageIndex: 0)
             .Returns(reply);
 
