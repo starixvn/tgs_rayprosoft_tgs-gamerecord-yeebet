@@ -5,16 +5,9 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.YeeBet", "Tgs.GameRecord.YeeBet\Tgs.GameRecord.YeeBet.csproj", "{074D5C71-57AF-4F9E-9F17-BEF7B967F2F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3DBC9F43-938B-48E7-BDB1-BBD2AA50FABA}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		CodeMaid.config = CodeMaid.config
-		nuget.config = nuget.config
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.YeeBet.Core", "Tgs.GameRecord.YeeBet.Core\Tgs.GameRecord.YeeBet.Core.csproj", "{CEA2CAA8-7880-497B-8070-53346FE9FB29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.YeeBet.Core", "Tgs.GameRecord.YeeBet.Core\Tgs.GameRecord.YeeBet.Core.csproj", "{CEA2CAA8-7880-497B-8070-53346FE9FB29}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.YeeBet.Core.UnitTest", "Tgs.GameRecord.YeeBet.Core.UnitTest\Tgs.GameRecord.YeeBet.Core.UnitTest.csproj", "{D7CDE699-F996-4541-B953-AFC7019F3EA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.YeeBet.Core.UnitTest", "Tgs.GameRecord.YeeBet.Core.UnitTest\Tgs.GameRecord.YeeBet.Core.UnitTest.csproj", "{D7CDE699-F996-4541-B953-AFC7019F3EA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
