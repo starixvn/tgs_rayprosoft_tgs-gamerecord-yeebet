@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="JunitXml.TestLogger" Version="3.0.124" />
+	<PackageReference Include="JunitXml.TestLogger" Version="3.0.125" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0-preview.23280.1" />
 	<PackageReference Include="NSubstitute" Version="5.0.0" />
     <PackageReference Include="xunit" Version="2.5.0-pre.37" />
