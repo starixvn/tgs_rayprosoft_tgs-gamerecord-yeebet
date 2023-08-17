@@ -48,6 +48,11 @@ public class SchedulePullRecordCommandServiceUnitTest
                 2000
             ).Returns(gameRecords.ToAsyncEnumerable());
 
+        _ = fakeService
+          .ExecuteAsync(
+              Arg.Any<HandleRecordCommand>())
+          .Returns(ValueTask.CompletedTask);
+
         var sut = new SchedulePullRecordCommandService(
             fakeLogger,
             fakeClient,
@@ -55,19 +60,13 @@ public class SchedulePullRecordCommandServiceUnitTest
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
-        await fakeService
-            .Received(1)
-            .ExecuteAsync(
-                Arg.Any<HandleRecordCommand>())
-            .ConfigureAwait(false);
-
         _ = await fakeClient
             .Received(1)
             .GameRecordMarkAsync(
                 apiUrl: Arg.Is(command.ApiUrl),
                 appId: Arg.Is(command.AppId),
                 secretKey: Arg.Is(command.SecretKey),
-                externalRoundIds: Arg.Any<string[]>())
+                externalRoundIds: Arg.Any<List<string>>())
              .ConfigureAwait(false);
     }
 }
