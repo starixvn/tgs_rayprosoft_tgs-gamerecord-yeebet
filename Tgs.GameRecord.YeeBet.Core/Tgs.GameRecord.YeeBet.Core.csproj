@@ -7,17 +7,16 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="StackExchange.Redis" Version="2.6.116" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.122" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />		
-		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.7" />
-		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.6" />		
-		<PackageReference Include="Tgs.GameRounds.Work.Client" Version="0.0.5" />
-		<PackageReference Include="Tgs.GameRounds.Work.Manual.Client" Version="0.0.3" />
+		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.8" />
+		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.8" />
+		<PackageReference Include="Tgs.GameRecord.Handle.Client" Version="0.0.6" />
 		<PackageReference Include="Tgs.MessageQueue" Version="2.3.0" />
-		<PackageReference Include="Tgs.MessageQueue.Nats" Version="2.3.0" />
+		<PackageReference Include="Tgs.MessageQueue.Nats" Version="2.3.1" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0-preview.5.23280.8" />
-		<PackageReference Include="Grpc.Tools" Version="2.56.0">			
+		<PackageReference Include="Grpc.Tools" Version="2.57.0">			
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

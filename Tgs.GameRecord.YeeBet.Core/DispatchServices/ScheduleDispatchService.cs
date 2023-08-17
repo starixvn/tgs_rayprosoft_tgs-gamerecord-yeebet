@@ -6,13 +6,13 @@ namespace Tgs.GameRecord.YeeBet.Core.DispatchServices;
 
 internal class ScheduleDispatchService : ICommandService<ScheduleDispatchCommand>
 {
-    private readonly ICommandService<ScheduleWorkerCommand> _commandService;
+    private readonly ICommandService<SchedulePullRecordCommand> _commandService;
     private readonly GameRecordInfoOptions _gameRecordInfoOptions;
     private readonly IScheduleDispatch _scheduleDispatch;
 
     public ScheduleDispatchService(
         IOptions<GameRecordInfoOptions> options,
-        ICommandService<ScheduleWorkerCommand> commandService,
+        ICommandService<SchedulePullRecordCommand> commandService,
         IScheduleDispatch scheduleDispatch)
     {
         _gameRecordInfoOptions = options.Value;
@@ -29,7 +29,7 @@ internal class ScheduleDispatchService : ICommandService<ScheduleDispatchCommand
             {
                 try
                 {
-                    var workerCommand = new ScheduleWorkerCommand(
+                    var workerCommand = new SchedulePullRecordCommand(
                          ApiUrl: command.ApiUrl,
                          AppId: command.AppId,
                          SecretKey: command.SecretKey);

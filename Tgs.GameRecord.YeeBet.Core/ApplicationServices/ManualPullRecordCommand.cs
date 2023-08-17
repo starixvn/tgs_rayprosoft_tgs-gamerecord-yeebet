@@ -1,4 +1,7 @@
-﻿using Tgs.GameInterface.YeeBet.Protos;
-
-namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
-public record ManualPullRecordCommand(IEnumerable<GameRecordInfo> Records);
+﻿namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
+public record ManualPullRecordCommand(
+    Uri ApiUrl,
+    string AppId,
+    string SecretKey,
+    DateTimeOffset BeginTime,
+    DateTimeOffset EndTime);

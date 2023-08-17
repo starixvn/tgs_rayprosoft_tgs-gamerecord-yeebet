@@ -6,18 +6,18 @@ using Tgs.GameInterface.YeeBet.Protos;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameRecord.YeeBet.Core.UnitTest;
+namespace Tgs.GameRecord.YeeBet.Core.UnitTest.ApplicationServices;
 
-public class ManualWorkerServiceUnitTest
+public class ManualPullRecordCommandServiceUnitTest
 {
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<ManualWorkerService>.Instance;
+        var fakeLogger = NullLogger<ManualPullRecordCommandService>.Instance;
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
-        var fakeService = Substitute.For<ICommandService<ManualPullRecordCommand>>();
+        var fakeService = Substitute.For<ICommandService<HandleRecordCommand>>();
 
-        var command = new ManualWorkerCommand(
+        var command = new ManualPullRecordCommand(
             ApiUrl: new("http://api.98kbus.top/"),
             AppId: "xtdA15OTVGEP",
             SecretKey: "298511c51d785332d8d279998b79cd3c",
@@ -58,7 +58,7 @@ public class ManualWorkerServiceUnitTest
                 pageIndex: 0)
             .Returns(reply);
 
-        var sut = new ManualWorkerService(
+        var sut = new ManualPullRecordCommandService(
             fakeLogger,
             fakeClient,
             fakeService);
@@ -68,7 +68,7 @@ public class ManualWorkerServiceUnitTest
         await fakeService
             .Received(1)
             .ExecuteAsync(
-                Arg.Any<ManualPullRecordCommand>())
+                Arg.Any<HandleRecordCommand>())
             .ConfigureAwait(false);
     }
 }

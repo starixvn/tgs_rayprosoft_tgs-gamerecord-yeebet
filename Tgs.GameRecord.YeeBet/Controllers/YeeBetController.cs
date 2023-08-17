@@ -69,11 +69,11 @@ public class YeeBetController : ControllerBase
     /// </remarks>
     [HttpPost]
     public async ValueTask ManualExecueAsync(
-        [FromServices] ICommandService<ManualWorkerCommand> service,
+        [FromServices] ICommandService<ManualPullRecordCommand> service,
         [FromBody] ManualQueryViewModel source)
     {
         await service.ExecuteAsync(
-            command: new ManualWorkerCommand(
+            command: new ManualPullRecordCommand(
                 source.ApiUrl,
                 source.AppId,
                 source.SecretKey,

@@ -6,18 +6,18 @@ using Tgs.GameInterface.YeeBet.Protos;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameRecord.YeeBet.Core.UnitTest;
+namespace Tgs.GameRecord.YeeBet.Core.UnitTest.ApplicationServices;
 
-public class ScheduleWorkerServiceUnitTest
+public class SchedulePullRecordCommandServiceUnitTest
 {
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<ScheduleWorkerService>.Instance;
+        var fakeLogger = NullLogger<SchedulePullRecordCommandService>.Instance;
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
-        var fakeService = Substitute.For<ICommandService<SchedulePullRecordCommand>>();
+        var fakeService = Substitute.For<ICommandService<HandleRecordCommand>>();
 
-        var command = new ScheduleWorkerCommand(
+        var command = new SchedulePullRecordCommand(
             ApiUrl: new("http://api.98kbus.top/"),
             AppId: "xtdA15OTVGEP",
             SecretKey: "298511c51d785332d8d279998b79cd3c");
@@ -48,7 +48,7 @@ public class ScheduleWorkerServiceUnitTest
                 2000
             ).Returns(gameRecords.ToAsyncEnumerable());
 
-        var sut = new ScheduleWorkerService(
+        var sut = new SchedulePullRecordCommandService(
             fakeLogger,
             fakeClient,
             fakeService);
@@ -58,7 +58,7 @@ public class ScheduleWorkerServiceUnitTest
         await fakeService
             .Received(1)
             .ExecuteAsync(
-                Arg.Any<SchedulePullRecordCommand>())
+                Arg.Any<HandleRecordCommand>())
             .ConfigureAwait(false);
 
         _ = await fakeClient

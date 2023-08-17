@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="JunitXml.TestLogger" Version="3.0.125" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.0-preview.23280.1" />
+	<PackageReference Include="JunitXml.TestLogger" Version="3.0.134" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
 	<PackageReference Include="NSubstitute" Version="5.0.0" />
-    <PackageReference Include="xunit" Version="2.5.0-pre.37" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0-pre.22">
+    <PackageReference Include="xunit" Version="2.5.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -24,6 +24,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tgs.GameRecord.YeeBet.Core\Tgs.GameRecord.YeeBet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\00.Git\game-yeebet\tgs-gamerecord-yeebet\Tgs.GameRecord.YeeBet.Core.UnitTest\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\00.Git\game-yeebet\tgs-gamerecord-yeebet\Tgs.GameRecord.YeeBet.Core.UnitTest\.editorconfig" />
   </ItemGroup>
 
 </Project>
