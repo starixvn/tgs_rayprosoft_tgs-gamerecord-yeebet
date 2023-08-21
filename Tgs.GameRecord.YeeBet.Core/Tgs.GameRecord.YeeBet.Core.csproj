@@ -10,8 +10,8 @@
 		<PackageReference Include="StackExchange.Redis" Version="2.6.122" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />		
 		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.8" />
-		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.8" />
-		<PackageReference Include="Tgs.GameRecord.Handle.Client" Version="0.0.6" />
+		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.10" />
+		<PackageReference Include="Tgs.GameRecord.Handle.Client" Version="0.0.9" />
 		<PackageReference Include="Tgs.MessageQueue" Version="2.3.0" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="2.3.1" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
