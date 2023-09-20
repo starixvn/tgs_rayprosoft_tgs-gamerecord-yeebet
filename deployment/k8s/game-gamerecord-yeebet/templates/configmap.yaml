@@ -13,11 +13,6 @@ data:
           "Default": "Warning"
           }
       },
-      "GameRecordInfo": {
-        "GameProviderCode": "YEEBET",
-        "GameProviderConfig": "YEEBETConfiguration",        
-        "LockMinute": 10
-      },
       "GameRecord": {
         "GameCommandClientBaseUrl": "http://game-gamecommand/",        
         "GameInterfaceBaseUrl": "http://game-gameinterface-yeebet:9090/"

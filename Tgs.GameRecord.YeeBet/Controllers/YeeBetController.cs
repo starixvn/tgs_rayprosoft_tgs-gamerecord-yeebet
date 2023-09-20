@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 using Tgs.GameRecord.YeeBet.Messages;
 using Tgs.GameRecord.YeeBet.ViewModels;
-using Tgs.MessageQueue;
 using Tgs.ServiceUtility;
+using Valhalla.MessageQueue;
 
 namespace Tgs.GameRecord.YeeBet.Controllers;
 

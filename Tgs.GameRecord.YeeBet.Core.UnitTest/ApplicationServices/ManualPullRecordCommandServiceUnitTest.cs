@@ -63,12 +63,11 @@ public class ManualPullRecordCommandServiceUnitTest
             fakeClient,
             fakeService);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         await fakeService
             .Received(1)
             .ExecuteAsync(
-                Arg.Any<HandleRecordCommand>())
-            .ConfigureAwait(false);
+                Arg.Any<HandleRecordCommand>());
     }
 }

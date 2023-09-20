@@ -27,5 +27,6 @@ public static class ServiceCollectionExtensions
         .AddGameCommandClient(gameCommandClientOptions)
         .AddGameInterfaceYeeBetClient(gameInterfaceYeeBetClientOptions)
         .AddGameRecordHandleClient()
+        .AddTransient<IHangfireUtensil, HangfireUtensil>()
         .AddTransient<IScheduleDispatch>(sp => ActivatorUtilities.CreateInstance<ScheduleDispatch>(sp, sp.GetRequiredService<RedisConnectionManager>().Database));
 }

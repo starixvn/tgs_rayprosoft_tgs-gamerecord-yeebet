@@ -58,15 +58,14 @@ public class SchedulePullRecordCommandServiceUnitTest
             fakeClient,
             fakeService);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = await fakeClient
             .Received(1)
             .GameRecordMarkAsync(
-                apiUrl: Arg.Is(command.ApiUrl),
-                appId: Arg.Is(command.AppId),
-                secretKey: Arg.Is(command.SecretKey),
-                externalRoundIds: Arg.Any<List<string>>())
-             .ConfigureAwait(false);
+            apiUrl: Arg.Is(command.ApiUrl),
+            appId: Arg.Is(command.AppId),
+            secretKey: Arg.Is(command.SecretKey),
+            externalRoundIds: Arg.Any<List<string>>());
     }
 }

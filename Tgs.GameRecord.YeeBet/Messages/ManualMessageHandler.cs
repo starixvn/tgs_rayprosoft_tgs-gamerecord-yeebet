@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
-using Tgs.MessageQueue;
 using Tgs.ServiceUtility;
+using Valhalla.MessageQueue;
 
 namespace Tgs.GameRecord.YeeBet.Messages;
 
