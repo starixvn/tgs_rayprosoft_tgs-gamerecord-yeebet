@@ -114,9 +114,11 @@ builder.Services
 builder.Services
     .AddOpenTelemetry()
     .WithTracing(builder => builder
-        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddEnvironmentVariableDetector())
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+            .AddEnvironmentVariableDetector())
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
+        .AddSource("Valhalla.*")
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddGrpcClientInstrumentation()
@@ -124,7 +126,8 @@ builder.Services
         .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
         .AddOtlpExporter())
     .WithMetrics(meterBuiler => meterBuiler
-    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddEnvironmentVariableDetector())
+    .SetResourceBuilder(ResourceBuilder.CreateDefault()
+    .AddEnvironmentVariableDetector())
     .AddRuntimeInstrumentation()
     .AddAspNetCoreInstrumentation()
     .AddOtlpExporter())
