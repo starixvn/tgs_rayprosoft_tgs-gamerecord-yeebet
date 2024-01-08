@@ -6,18 +6,11 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 
-internal class HandleRecordCommandService : ICommandService<HandleRecordCommand>
+internal class HandleRecordCommandService(
+    IOptions<GameRecordInfoOptions> options,
+    IGameRecordHandleClient client) : ICommandService<HandleRecordCommand>
 {
-    private readonly IGameRecordHandleClient _client;
-    private readonly GameRecordInfoOptions _gameRecordInfo;
-
-    public HandleRecordCommandService(
-        IOptions<GameRecordInfoOptions> gameRecordInfoOptions,
-        IGameRecordHandleClient client)
-    {
-        _gameRecordInfo = gameRecordInfoOptions.Value;
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
+    private readonly GameRecordInfoOptions _options = options.Value;
 
     public ValueTask ExecuteAsync(HandleRecordCommand command, CancellationToken cancellationToken = default)
     {
@@ -42,9 +35,9 @@ internal class HandleRecordCommandService : ICommandService<HandleRecordCommand>
             }
         }
 
-        return _client
+        return client
             .MessageAsync(
-            gameProviderCode: _gameRecordInfo.GameProviderCode,
+            gameProviderCode: _options.GameProviderCode,
             playerCode: command.Record.PlayerCode,
             wagerState: wagerState,
             wagerType: WagerTypes.Normal,
