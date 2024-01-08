@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using System.Text.Json.Nodes;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Tgs.GameInterface.YeeBet.Protos;
@@ -17,7 +18,10 @@ public class HandleRecordCommandServiceUnitTest
         {
             GameProviderCode = "YEEBET",
             GameProviderConfiguration = "YEEBETConfiguration",
-            LockMinute = 10
+            HangfirePrefix = "gamerecord-yeebet-hangfire:",
+            HangfireLocking = "gamerecord-yeebet-locking:",
+            ScheduleLockingPrefix = "gamerecord-yeebet-schedule-locking:",
+            ScheduleLockingMinute = 10
         });
         var fakeClient = Substitute.For<IGameRecordHandleClient>();
 
@@ -35,7 +39,7 @@ public class HandleRecordCommandServiceUnitTest
                 WinLoss = 0,
                 Turnover = 0,
                 Settle = 60,
-                AdditionalData = string.Empty,
+                AdditionalData = "{}",
                 ExternalGameId = "12"
             });
 
@@ -69,7 +73,7 @@ public class HandleRecordCommandServiceUnitTest
             commission: Arg.Is(0.0m),
             turnover: Arg.Is(command.Record.Turnover.ToDecimal().GetValueOrDefault(0)),
             winLoss: Arg.Is(command.Record.WinLoss.ToDecimal().GetValueOrDefault(0)),
-            additionalData: Arg.Is(command.Record.AdditionalData),
+            additionalData: Arg.Any<JsonNode>(),
             cancellationToken: Arg.Any<CancellationToken>());
     }
 }

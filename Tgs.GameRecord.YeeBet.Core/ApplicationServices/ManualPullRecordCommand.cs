@@ -3,5 +3,5 @@ public record ManualPullRecordCommand(
     Uri ApiUrl,
     string AppId,
     string SecretKey,
-    DateTimeOffset BeginTime,
+    DateTimeOffset StartTime,
     DateTimeOffset EndTime);

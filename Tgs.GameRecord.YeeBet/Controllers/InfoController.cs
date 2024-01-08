@@ -1,27 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Sockets;
+using System.Net;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Tgs.GameRecord.YeeBet.Core;
 
 namespace Tgs.GameRecord.YeeBet.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class InfoController : ControllerBase
+public class InfoController(
+    IOptions<GameRecordInfoOptions> gameRecordInfoOptions) : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-
-    public InfoController(IConfiguration configuration)
-    {
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-    }
-
     [HttpGet]
-    public object Get()
+    public async Task<object> GetAsync([FromServices] IWebHostEnvironment _hostingEnvironment)
     {
-        var gameRecordInfo = _configuration.GetSection("GameRecordInfo").Get<GameRecordInfoOptions>();
+        var hostName = Dns.GetHostName();
+        var hostEntry = await Dns.GetHostEntryAsync(hostName);
+        var hostIp = Array.Find(hostEntry.AddressList,
+            x => x.AddressFamily == AddressFamily.InterNetwork);
 
         return new
         {
-            gameRecordInfo
+            Environment.MachineName,
+            HostName = hostName,
+            HostIp = hostIp?.ToString() ?? string.Empty,
+            Environment = _hostingEnvironment.EnvironmentName,
+            OsVersion = $"{Environment.OSVersion}",
+            Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
+            ProcessCount = Environment.ProcessorCount,
+            GameRecordInfoOptions = gameRecordInfoOptions.Value
         };
     }
 }

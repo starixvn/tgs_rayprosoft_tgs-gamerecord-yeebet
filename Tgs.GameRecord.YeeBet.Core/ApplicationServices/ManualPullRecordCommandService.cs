@@ -6,53 +6,41 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 
-internal class ManualPullRecordCommandService : ICommandService<ManualPullRecordCommand>
+internal class ManualPullRecordCommandService(
+    ILogger<ManualPullRecordCommandService> logger,
+    IGameInterfaceYeeBetClient client,
+    ICommandService<HandleRecordCommand> service) : ICommandService<ManualPullRecordCommand>
 {
-    private readonly IGameInterfaceYeeBetClient _client;
-    private readonly ILogger<ManualPullRecordCommandService> _logger;
-    private readonly ICommandService<HandleRecordCommand> _service;
-
-    public ManualPullRecordCommandService(
-        ILogger<ManualPullRecordCommandService> logger,
-        IGameInterfaceYeeBetClient client,
-        ICommandService<HandleRecordCommand> service)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
-    }
-
     public async ValueTask ExecuteAsync(ManualPullRecordCommand command, CancellationToken cancellationToken = default)
     {
         var pageIndex = 0;
         var pageSize = 2000;
 
-        _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
+        logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
             DateTime.UtcNow.ToString("O"),
             JsonSerializer.Serialize(new
             {
                 command.ApiUrl,
                 command.AppId,
                 command.SecretKey,
-                command.BeginTime,
+                command.StartTime,
                 command.EndTime,
                 pageIndex,
                 pageSize
             }));
 
-        var reply = await _client
-            .GameRecordInquireAsync(
-                command.ApiUrl,
-                command.AppId,
-                command.SecretKey,
-                command.BeginTime,
-                command.EndTime,
-                pageSize: pageSize,
-                pageIndex: pageIndex,
-                cancellationToken)
+        var reply = await client.GameRecordInquireAsync(
+            apiUrl: command.ApiUrl,
+            appId: command.AppId,
+            secretKey: command.SecretKey,
+            beginTime: command.StartTime,
+            endTime: command.EndTime,
+            pageSize: pageSize,
+            pageIndex: pageIndex,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Response:{response}",
+        logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Response:{response}",
             DateTime.UtcNow.ToString("O"),
             JsonSerializer.Serialize(reply));
 
@@ -66,7 +54,7 @@ internal class ManualPullRecordCommandService : ICommandService<ManualPullRecord
         {
             try
             {
-                await _service
+                await service
                     .ExecuteAsync(
                     command: new HandleRecordCommand(Record: gameHistory),
                     cancellationToken: cancellationToken)
@@ -74,7 +62,7 @@ internal class ManualPullRecordCommandService : ICommandService<ManualPullRecord
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
+                logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
             }
         }
 
@@ -82,32 +70,32 @@ internal class ManualPullRecordCommandService : ICommandService<ManualPullRecord
         {
             pageIndex++;
 
-            _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
+            logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
                 DateTime.UtcNow.ToString("O"),
                 JsonSerializer.Serialize(new
                 {
                     command.ApiUrl,
                     command.AppId,
                     command.SecretKey,
-                    command.BeginTime,
+                    command.StartTime,
                     command.EndTime,
                     pageIndex,
                     pageSize,
                 }));
 
-            reply = await _client
+            reply = await client
                 .GameRecordInquireAsync(
                     command.ApiUrl,
                     command.AppId,
                     command.SecretKey,
-                    command.BeginTime,
+                    command.StartTime,
                     command.EndTime,
                     pageSize: pageSize,
                     pageIndex: pageIndex,
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            _logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync |  Response:{response}",
+            logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync |  Response:{response}",
                 DateTime.UtcNow.ToString("O"),
                 JsonSerializer.Serialize(reply));
 
@@ -115,7 +103,7 @@ internal class ManualPullRecordCommandService : ICommandService<ManualPullRecord
             {
                 try
                 {
-                    await _service
+                    await service
                         .ExecuteAsync(
                         command: new HandleRecordCommand(Record: gameHistory),
                         cancellationToken: cancellationToken)
@@ -123,7 +111,7 @@ internal class ManualPullRecordCommandService : ICommandService<ManualPullRecord
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
+                    logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
                 }
             }
         }

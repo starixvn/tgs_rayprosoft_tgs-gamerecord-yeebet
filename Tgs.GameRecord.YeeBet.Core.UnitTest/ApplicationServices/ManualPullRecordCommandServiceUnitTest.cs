@@ -21,7 +21,7 @@ public class ManualPullRecordCommandServiceUnitTest
             ApiUrl: new("http://api.98kbus.top/"),
             AppId: "xtdA15OTVGEP",
             SecretKey: "298511c51d785332d8d279998b79cd3c",
-            BeginTime: DateTimeOffset.UtcNow.AddMinutes(-10),
+            StartTime: DateTimeOffset.UtcNow.AddMinutes(-10),
             EndTime: DateTimeOffset.UtcNow);
 
         var reply = new GameRecordInfoReply()
@@ -52,7 +52,7 @@ public class ManualPullRecordCommandServiceUnitTest
                 apiUrl: Arg.Is(command.ApiUrl),
                 appId: Arg.Is(command.AppId),
                 secretKey: Arg.Is(command.SecretKey),
-                beginTime: Arg.Is(command.BeginTime),
+                beginTime: Arg.Is(command.StartTime),
                 endTime: Arg.Is(command.EndTime),
                 pageSize: 2000,
                 pageIndex: 0)

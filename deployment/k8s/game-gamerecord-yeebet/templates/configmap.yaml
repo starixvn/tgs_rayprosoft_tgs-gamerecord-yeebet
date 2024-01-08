@@ -9,13 +9,14 @@ data:
   appsettings.json: |
     {
       "Logging": {
-         "LogLevel": {
-          "Default": "Warning"
-          }
+        "LogLevel": {
+          "Default": "Warning",
+          "Tgs.GameRecord.YeeBet.Messages": "Information"
+        }
       },
       "GameRecord": {
-        "GameCommandClientBaseUrl": "http://game-gamecommand/",        
-        "GameInterfaceBaseUrl": "http://game-gameinterface-yeebet:9090/"
+        "GameCommandClientBaseUrl": "http://game-gamecommand/",
+        "GameInterfaceBaseUrl": "dns:///game-gameinterface-yeebet:9090/"
       }
     }
   otel-collector-config.yaml: |

@@ -14,6 +14,7 @@ public class SchedulePullRecordCommandServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<SchedulePullRecordCommandService>.Instance;
+        var fakeScheduleLocking = Substitute.For<IScheduleLocking>();
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
         var fakeService = Substitute.For<ICommandService<HandleRecordCommand>>();
 
@@ -22,8 +23,13 @@ public class SchedulePullRecordCommandServiceUnitTest
             AppId: "xtdA15OTVGEP",
             SecretKey: "298511c51d785332d8d279998b79cd3c");
 
+        _ = fakeScheduleLocking.LockingAsync(
+            Arg.Is(command.AppId),
+            Arg.Any<CancellationToken>())
+            .Returns(true);
+
         var gameRecords = new GameRecordInfo[] {
-            new GameRecordInfo()
+            new()
             {
                 PlayerCode =  "4ucmqplxb029",
                 ExternalRoundId ="889026",
@@ -55,6 +61,7 @@ public class SchedulePullRecordCommandServiceUnitTest
 
         var sut = new SchedulePullRecordCommandService(
             fakeLogger,
+            fakeScheduleLocking,
             fakeClient,
             fakeService);
 

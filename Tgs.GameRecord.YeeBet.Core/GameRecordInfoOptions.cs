@@ -6,7 +6,10 @@ public record GameRecordInfoOptions
 
     public string GameProviderConfiguration { get; init; } = default!;
 
-    public string GameProviderHangfire { get; init; } = default!;
+    public string HangfirePrefix { get; set; } = "gamerecord-yeebet-hangfire:";
+    public string HangfireLocking { get; set; } = "gamerecord-yeebet-locking:";
 
-    public double LockMinute { get; set; } = 4d;
+    public string ScheduleLockingPrefix { get; set; } = "gamerecord-yeebet-schedule-locking:";
+
+    public double ScheduleLockingMinute { get; set; } = 10d;
 }

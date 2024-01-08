@@ -1,4 +1,4 @@
-﻿namespace Tgs.GameRecord.YeeBet.Core;
+﻿namespace Tgs.GameRecord.YeeBet;
 
 public record RedisOptions
 {
