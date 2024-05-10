@@ -8,24 +8,24 @@ using Valhalla.MessageQueue;
 namespace Tgs.GameRecord.YeeBet.Core.JobApplicationServices;
 
 internal class JobExecuteCommandService(
-    ILogger<JobExecuteCommandService> logger,
-    IMessageSender messageSender) : ICommandService<JobExecuteCommand>
+	ILogger<JobExecuteCommandService> logger,
+	IMessageSender messageSender) : ICommandService<JobExecuteCommand>
 {
-    public ValueTask ExecuteAsync(JobExecuteCommand command, CancellationToken cancellationToken = default)
-    {
-        var parameters = new YeeBetGameRecordScheduleMessage
-        {
-            ApiUrl = command.ApiUrl,
-            AppId = command.AppId,
-            SecretKey = command.SecretKey,
-        };
+	public ValueTask ExecuteAsync(JobExecuteCommand command, CancellationToken cancellationToken = default)
+	{
+		var parameters = new YeeBetGameRecordScheduleMessage
+		{
+			ApiUrl = command.ApiUrl,
+			AppId = command.AppId,
+			SecretKey = command.SecretKey,
+		};
 
-        logger.LogDebug("LogOn:{logOn} Parameters:{parameters}", DateTime.Now.ToString("u"), parameters);
+		logger.LogDebug("LogOn:{logOn} Parameters:{parameters}", DateTime.Now.ToString("u"), parameters);
 
-        return messageSender
-            .PublishAsync(
-            subject: YeeBetNatsConst.SchedulePublish,
-            data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(parameters)),
-            cancellationToken: cancellationToken);
-    }
+		return messageSender
+			.PublishAsync(
+			subject: YeeBetNatsConst.SchedulePublish,
+			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(parameters)),
+			cancellationToken: cancellationToken);
+	}
 }

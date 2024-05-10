@@ -10,69 +10,69 @@ namespace Tgs.GameRecord.YeeBet.Core.UnitTest.ApplicationServices;
 
 public class SchedulePullRecordCommandServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeLogger = NullLogger<SchedulePullRecordCommandService>.Instance;
-        var fakeScheduleLocking = Substitute.For<IScheduleLocking>();
-        var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
-        var fakeService = Substitute.For<ICommandService<HandleRecordCommand>>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeLogger = NullLogger<SchedulePullRecordCommandService>.Instance;
+		var fakeScheduleLocking = Substitute.For<IScheduleLocking>();
+		var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
+		var fakeService = Substitute.For<ICommandService<HandleRecordCommand>>();
 
-        var command = new SchedulePullRecordCommand(
-            ApiUrl: new("http://api.98kbus.top/"),
-            AppId: "xtdA15OTVGEP",
-            SecretKey: "298511c51d785332d8d279998b79cd3c");
+		var command = new SchedulePullRecordCommand(
+			ApiUrl: new("http://api.98kbus.top/"),
+			AppId: "xtdA15OTVGEP",
+			SecretKey: "298511c51d785332d8d279998b79cd3c");
 
-        _ = fakeScheduleLocking.LockingAsync(
-            Arg.Is(command.AppId),
-            Arg.Any<CancellationToken>())
-            .Returns(true);
+		_ = fakeScheduleLocking.LockingAsync(
+			Arg.Is(command.AppId),
+			Arg.Any<CancellationToken>())
+			.Returns(true);
 
-        var gameRecords = new GameRecordInfo[] {
-            new()
-            {
-                PlayerCode =  "4ucmqplxb029",
-                ExternalRoundId ="889026",
-                IsClosed = true,
-                ExternalCreatedOn = new DateTimeOffset(DateTime.Parse("2023-03-28 10:41:29"), TimeSpan.FromHours(+8)).ToTimestamp(),
-                ExternalClosedOn = new DateTimeOffset(DateTime.Parse("2023-03-28 10:42:07"), TimeSpan.FromHours(+8)).ToTimestamp(),
-                Bet = 60m,
-                ValidBet = 0m,
-                WinLoss =  0.00m,
-                Turnover = 0.00m,
-                Settle = 60.0m,
-                AdditionalData = string.Empty,
-                IsVoid = false,
-                ExternalGameId = "12"
-            }};
+		var gameRecords = new GameRecordInfo[] {
+			new()
+			{
+				PlayerCode =  "4ucmqplxb029",
+				ExternalRoundId ="889026",
+				IsClosed = true,
+				ExternalCreatedOn = new DateTimeOffset(DateTime.Parse("2023-03-28 10:41:29"), TimeSpan.FromHours(+8)).ToTimestamp(),
+				ExternalClosedOn = new DateTimeOffset(DateTime.Parse("2023-03-28 10:42:07"), TimeSpan.FromHours(+8)).ToTimestamp(),
+				Bet = 60m,
+				ValidBet = 0m,
+				WinLoss =  0.00m,
+				Turnover = 0.00m,
+				Settle = 60.0m,
+				AdditionalData = string.Empty,
+				IsVoid = false,
+				ExternalGameId = "12"
+			}};
 
-        _ = fakeClient
-            .GameRecordAsync(
-                Arg.Is(command.ApiUrl),
-                Arg.Is(command.AppId),
-                Arg.Is(command.SecretKey),
-                2000
-            ).Returns(gameRecords.ToAsyncEnumerable());
+		_ = fakeClient
+			.GameRecordAsync(
+				Arg.Is(command.ApiUrl),
+				Arg.Is(command.AppId),
+				Arg.Is(command.SecretKey),
+				2000
+			).Returns(gameRecords.ToAsyncEnumerable());
 
-        _ = fakeService
-          .ExecuteAsync(
-              Arg.Any<HandleRecordCommand>())
-          .Returns(ValueTask.CompletedTask);
+		_ = fakeService
+		  .ExecuteAsync(
+			  Arg.Any<HandleRecordCommand>())
+		  .Returns(ValueTask.CompletedTask);
 
-        var sut = new SchedulePullRecordCommandService(
-            fakeLogger,
-            fakeScheduleLocking,
-            fakeClient,
-            fakeService);
+		var sut = new SchedulePullRecordCommandService(
+			fakeLogger,
+			fakeScheduleLocking,
+			fakeClient,
+			fakeService);
 
-        await sut.ExecuteAsync(command);
+		await sut.ExecuteAsync(command);
 
-        _ = await fakeClient
-            .Received(1)
-            .GameRecordMarkAsync(
-            apiUrl: Arg.Is(command.ApiUrl),
-            appId: Arg.Is(command.AppId),
-            secretKey: Arg.Is(command.SecretKey),
-            externalRoundIds: Arg.Any<List<string>>());
-    }
+		_ = await fakeClient
+			.Received(1)
+			.GameRecordMarkAsync(
+			apiUrl: Arg.Is(command.ApiUrl),
+			appId: Arg.Is(command.AppId),
+			secretKey: Arg.Is(command.SecretKey),
+			externalRoundIds: Arg.Any<List<string>>());
+	}
 }
