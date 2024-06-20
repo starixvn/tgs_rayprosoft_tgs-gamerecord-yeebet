@@ -11,8 +11,10 @@ data:
       "Logging": {
         "LogLevel": {
           "Default": "Warning",
-          "Tgs.GameRecord.YeeBet.Messages": "Information",
-          "Tgs.GameRecord.YeeBet.Core.ApplicationServices.HandleRecordCommandService": "Information"
+          "Grpc.Net.Client.Balancer": "Debug",
+          "Tgs.GameRecord.YeeBet.Messages.ManualMessageHandler": "Warning",
+          "Tgs.GameRecord.YeeBet.Messages.ScheduleMessageHandler": "Warning",
+          "Tgs.GameRecord.YeeBet.Core.ApplicationServices.HandleRecordCommandService": "Warning"
         }
       },
       "GameRecord": {
