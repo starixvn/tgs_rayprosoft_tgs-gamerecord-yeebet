@@ -1,47 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
 	<PropertyGroup>
-		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-		<NoWarn>$(NoWarn);1591;0063</NoWarn>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ServerGarbageCollection>true</ServerGarbageCollection>
 		<UserSecretsId>d5640a86-5341-4ed7-8fbc-3242b28139ce</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<NoWarn>$(NoWarn);1591;0063</NoWarn>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<ProduceReferenceAssembly>True</ProduceReferenceAssembly>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentdForward.OpenTelemetry.MessagePack" Version="0.3.8" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-		<PackageReference Include="OpenTelemetry" Version="1.8.1" />
-		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.8.1" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
+		<PackageReference Include="OpenTelemetry" Version="1.9.0" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.9.0" />
+		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.7" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.GrpcCore" Version="1.0.0-beta.5" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.5.0-beta.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.1" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.9.0" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.9.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 		<PackageReference Include="Tgs.Interceptors" Version="0.2.1" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-    <ProjectReference Include="..\Tgs.GameRecord.YeeBet.Common\Tgs.GameRecord.YeeBet.Common.csproj" />
-    <ProjectReference Include="..\Tgs.GameRecord.YeeBet.Core\Tgs.GameRecord.YeeBet.Core.csproj" />
-  </ItemGroup>
+		<ProjectReference Include="..\Tgs.GameRecord.YeeBet.Common\Tgs.GameRecord.YeeBet.Common.csproj" />
+		<ProjectReference Include="..\Tgs.GameRecord.YeeBet.Core\Tgs.GameRecord.YeeBet.Core.csproj" />
+	</ItemGroup>
 
 </Project>
