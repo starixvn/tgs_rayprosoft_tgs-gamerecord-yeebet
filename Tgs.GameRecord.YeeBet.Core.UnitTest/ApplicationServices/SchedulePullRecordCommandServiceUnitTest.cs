@@ -45,7 +45,7 @@ public class SchedulePullRecordCommandServiceUnitTest
 			appId: Arg.Is(command.AppId),
 			secretKey: Arg.Is(command.SecretKey),
 			size: 2000)
-			.Returns(gameRecords.ToAsyncEnumerable());
+			.Returns(gameRecords.ToAsyncEnumerable(), Enumerable.Empty<GameRecordInfo>().ToAsyncEnumerable());
 
 		_ = fakeService.ExecuteAsync(
 			command: Arg.Any<HandleRecordCommand>())
