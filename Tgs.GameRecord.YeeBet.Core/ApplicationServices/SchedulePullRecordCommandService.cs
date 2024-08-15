@@ -32,8 +32,7 @@ internal class SchedulePullRecordCommandService(
 			{
 				try
 				{
-					await service
-						.ExecuteAsync(
+					await service.ExecuteAsync(
 						command: new HandleRecordCommand(Record: gameRecord),
 						cancellationToken: cancellationToken)
 						.ConfigureAwait(false);
@@ -69,6 +68,6 @@ internal class SchedulePullRecordCommandService(
 					cancellationToken: cancellationToken)
 					.ConfigureAwait(false);
 			}
-		} while (!gameRecords.Any());
+		} while (gameRecords.Any());
 	}
 }

@@ -59,6 +59,6 @@ internal class ManualPullRecordCommandService(
 			}
 
 			pageIndex++;
-		} while (!(reply.Items ?? Enumerable.Empty<GameRecordInfo>()).Any());
+		} while ((reply.Items ?? Enumerable.Empty<GameRecordInfo>()).Any());
 	}
 }
