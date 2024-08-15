@@ -121,7 +121,8 @@ builder.Services
 		.AddHandler<ScheduleMessageHandler>(YeeBetNatsConst.SchedulePublish, YeeBetNatsConst.SchedulePublish)
 		.AddHandler<ManualMessageHandler>(YeeBetNatsConst.ManualPublish, YeeBetNatsConst.ManualPublish))
 	.ClearAllExchanges()
-	.AddNatsGlobPatternExchange("*");
+	.AddNatsGlobPatternExchange(YeeBetNatsConst.SchedulePublish)
+	.AddNatsGlobPatternExchange(YeeBetNatsConst.ManualPublish);
 
 builder.Services
 	.AddOpenTelemetry()
