@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using Tgs.GameInterface.YeeBet.Protos;
+using Tgs.GameRecord.Handle.Client;
 using Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 using Valhalla.MessageQueue;
 
@@ -15,7 +16,7 @@ public class HandleRecordCommandServiceUnitTest
 	public async Task Loss()
 	{
 		var faceLogger = NullLogger<HandleRecordCommandService>.Instance;
-		var gameRecordInfo = Options.Create(new GameRecordInfoOptions
+		var fakeGameRecordInfoOptions = Options.Create(new GameRecordInfoOptions
 		{
 			GameProviderCode = "YEEBET",
 			GameProviderConfiguration = "YEEBETConfiguration",
@@ -24,7 +25,12 @@ public class HandleRecordCommandServiceUnitTest
 			ScheduleLockingPrefix = "gamerecord-yeebet-schedule-locking:",
 			ScheduleLockingMinute = 10
 		});
-		var fakeMessageSender = Substitute.For<IMessageSender>();
+		var fakePolicySettingsOptions = Options.Create(new PolicySettingsOptions
+		{
+			RetryCount = 1,
+			RetrySeconds = 1,
+		});
+		var fakeGameRecordHandleClient = Substitute.For<IGameRecordHandleClient>();
 
 		var command = new HandleRecordCommand(
 			Record: new GameRecordInfo()
@@ -44,28 +50,28 @@ public class HandleRecordCommandServiceUnitTest
 				ExternalGameId = "3014"
 			});
 
-		var service = new HandleRecordCommandService(
+		var sut = new HandleRecordCommandService(
 			faceLogger,
-			gameRecordInfo,
-			fakeMessageSender);
+			fakeGameRecordInfoOptions,
+			fakePolicySettingsOptions,
+			fakeGameRecordHandleClient);
 
-		await service.ExecuteAsync(command);
+		await sut.ExecuteAsync(command);
 
-		_ = fakeMessageSender
+		_ = fakeGameRecordHandleClient
 			.Received(1)
-			.PublishAsync(
-			subject: Arg.Is(Handle.Common.GameRecordHandleNatsConst.GameRecordHandleRequest),
-			data: Arg.Is(new Handle.Common.Protos.GameRecordHandleRequest
+			.HandleAsync(
+			source: Arg.Is(new Handle.Common.ViewModels.GameRecordHandleViewModel
 			{
-				GameProviderCode = gameRecordInfo.Value.GameProviderCode,
+				GameProviderCode = fakeGameRecordInfoOptions.Value.GameProviderCode,
 				PlayerCode = command.Record.PlayerCode,
 				ExternalRoundId = command.Record.ExternalRoundId,
 				ExternalBetId = command.Record.ExternalRoundId,
 				ExternalGameId = command.Record.ExternalGameId,
-				ExternalCreatedOn = command.Record.ExternalCreatedOn,
-				ExternalClosedOn = command.Record.ExternalClosedOn,
-				ExternalPayoffOn = command.Record.ExternalClosedOn,
-				ExternalResettleOn = DateTimeOffset.UnixEpoch.ToTimestamp(),
+				ExternalCreatedOn = command.Record.ExternalCreatedOn.ToDateTimeOffset(),
+				ExternalClosedOn = command.Record.ExternalClosedOn.ToDateTimeOffset(),
+				ExternalPayoffOn = command.Record.ExternalClosedOn.ToDateTimeOffset(),
+				ExternalResettleOn = DateTimeOffset.UnixEpoch,
 				BetState = Handle.Common.Protos.BetState.Loss,
 				BetType = Handle.Common.Protos.BetType.Normal,
 				FreeGameState = Handle.Common.Protos.FreeGameState.None,
@@ -89,7 +95,7 @@ public class HandleRecordCommandServiceUnitTest
 	public async Task Win()
 	{
 		var faceLogger = NullLogger<HandleRecordCommandService>.Instance;
-		var gameRecordInfo = Options.Create(new GameRecordInfoOptions
+		var fakeGameRecordInfoOptions = Options.Create(new GameRecordInfoOptions
 		{
 			GameProviderCode = "YEEBET",
 			GameProviderConfiguration = "YEEBETConfiguration",
@@ -98,7 +104,12 @@ public class HandleRecordCommandServiceUnitTest
 			ScheduleLockingPrefix = "gamerecord-yeebet-schedule-locking:",
 			ScheduleLockingMinute = 10
 		});
-		var fakeMessageSender = Substitute.For<IMessageSender>();
+		var fakePolicySettingsOptions = Options.Create(new PolicySettingsOptions
+		{
+			RetryCount = 1,
+			RetrySeconds = 1,
+		});
+		var fakeGameRecordHandleClient = Substitute.For<IGameRecordHandleClient>();
 
 		var command = new HandleRecordCommand(
 			Record: new GameRecordInfo()
@@ -118,28 +129,28 @@ public class HandleRecordCommandServiceUnitTest
 				ExternalGameId = "3035"
 			});
 
-		var service = new HandleRecordCommandService(
+		var sut = new HandleRecordCommandService(
 			faceLogger,
-			gameRecordInfo,
-			fakeMessageSender);
+			fakeGameRecordInfoOptions,
+			fakePolicySettingsOptions,
+			fakeGameRecordHandleClient);
 
-		await service.ExecuteAsync(command);
+		await sut.ExecuteAsync(command);
 
-		_ = fakeMessageSender
+		_ = fakeGameRecordHandleClient
 			.Received(1)
-			.PublishAsync(
-			subject: Arg.Is(Handle.Common.GameRecordHandleNatsConst.GameRecordHandleRequest),
-			data: Arg.Is(new Handle.Common.Protos.GameRecordHandleRequest
+			.HandleAsync(
+			source: Arg.Is(new Handle.Common.ViewModels.GameRecordHandleViewModel
 			{
-				GameProviderCode = gameRecordInfo.Value.GameProviderCode,
+				GameProviderCode = fakeGameRecordInfoOptions.Value.GameProviderCode,
 				PlayerCode = command.Record.PlayerCode,
 				ExternalRoundId = command.Record.ExternalRoundId,
 				ExternalBetId = command.Record.ExternalRoundId,
 				ExternalGameId = command.Record.ExternalGameId,
-				ExternalCreatedOn = command.Record.ExternalCreatedOn,
-				ExternalClosedOn = command.Record.ExternalClosedOn,
-				ExternalPayoffOn = command.Record.ExternalClosedOn,
-				ExternalResettleOn = DateTimeOffset.UnixEpoch.ToTimestamp(),
+				ExternalCreatedOn = command.Record.ExternalCreatedOn.ToDateTimeOffset(),
+				ExternalClosedOn = command.Record.ExternalClosedOn.ToDateTimeOffset(),
+				ExternalPayoffOn = command.Record.ExternalClosedOn.ToDateTimeOffset(),
+				ExternalResettleOn = DateTimeOffset.UnixEpoch,
 				BetState = Handle.Common.Protos.BetState.Win,
 				BetType = Handle.Common.Protos.BetType.Normal,
 				FreeGameState = Handle.Common.Protos.FreeGameState.None,
@@ -163,7 +174,7 @@ public class HandleRecordCommandServiceUnitTest
 	public async Task Draw()
 	{
 		var faceLogger = NullLogger<HandleRecordCommandService>.Instance;
-		var gameRecordInfo = Options.Create(new GameRecordInfoOptions
+		var fakeGameRecordInfoOptions = Options.Create(new GameRecordInfoOptions
 		{
 			GameProviderCode = "YEEBET",
 			GameProviderConfiguration = "YEEBETConfiguration",
@@ -172,7 +183,12 @@ public class HandleRecordCommandServiceUnitTest
 			ScheduleLockingPrefix = "gamerecord-yeebet-schedule-locking:",
 			ScheduleLockingMinute = 10
 		});
-		var fakeMessageSender = Substitute.For<IMessageSender>();
+		var fakePolicySettingsOptions = Options.Create(new PolicySettingsOptions
+		{
+			RetryCount = 1,
+			RetrySeconds = 1,
+		});
+		var fakeGameRecordHandleClient = Substitute.For<IGameRecordHandleClient>();
 
 		var command = new HandleRecordCommand(
 			Record: new GameRecordInfo()
@@ -192,28 +208,28 @@ public class HandleRecordCommandServiceUnitTest
 				ExternalGameId = "3012"
 			});
 
-		var service = new HandleRecordCommandService(
+		var sut = new HandleRecordCommandService(
 			faceLogger,
-			gameRecordInfo,
-			fakeMessageSender);
+			fakeGameRecordInfoOptions,
+			fakePolicySettingsOptions,
+			fakeGameRecordHandleClient);
 
-		await service.ExecuteAsync(command);
+		await sut.ExecuteAsync(command);
 
-		_ = fakeMessageSender
+		_ = fakeGameRecordHandleClient
 			.Received(1)
-			.PublishAsync(
-			subject: Arg.Is(Handle.Common.GameRecordHandleNatsConst.GameRecordHandleRequest),
-			data: Arg.Is(new Handle.Common.Protos.GameRecordHandleRequest
+			.HandleAsync(
+			source: Arg.Is(new Handle.Common.ViewModels.GameRecordHandleViewModel
 			{
-				GameProviderCode = gameRecordInfo.Value.GameProviderCode,
+				GameProviderCode = fakeGameRecordInfoOptions.Value.GameProviderCode,
 				PlayerCode = command.Record.PlayerCode,
 				ExternalRoundId = command.Record.ExternalRoundId,
 				ExternalBetId = command.Record.ExternalRoundId,
 				ExternalGameId = command.Record.ExternalGameId,
-				ExternalCreatedOn = command.Record.ExternalCreatedOn,
-				ExternalClosedOn = command.Record.ExternalClosedOn,
-				ExternalPayoffOn = command.Record.ExternalClosedOn,
-				ExternalResettleOn = DateTimeOffset.UnixEpoch.ToTimestamp(),
+				ExternalCreatedOn = command.Record.ExternalCreatedOn.ToDateTimeOffset(),
+				ExternalClosedOn = command.Record.ExternalClosedOn.ToDateTimeOffset(),
+				ExternalPayoffOn = command.Record.ExternalClosedOn.ToDateTimeOffset(),
+				ExternalResettleOn = DateTimeOffset.UnixEpoch,
 				BetState = Handle.Common.Protos.BetState.Draw,
 				BetType = Handle.Common.Protos.BetType.Normal,
 				FreeGameState = Handle.Common.Protos.FreeGameState.None,

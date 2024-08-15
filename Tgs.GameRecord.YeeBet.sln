@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.YeeBet.Core"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.YeeBet.Core.UnitTest", "Tgs.GameRecord.YeeBet.Core.UnitTest\Tgs.GameRecord.YeeBet.Core.UnitTest.csproj", "{D7CDE699-F996-4541-B953-AFC7019F3EA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.YeeBet.Common", "Tgs.GameRecord.YeeBet.Common\Tgs.GameRecord.YeeBet.Common.csproj", "{448ED50D-7677-407F-8DDD-43333B0BCDBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.YeeBet.Common", "Tgs.GameRecord.YeeBet.Common\Tgs.GameRecord.YeeBet.Common.csproj", "{448ED50D-7677-407F-8DDD-43333B0BCDBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.YeeBet.Repositories", "Tgs.GameRecord.YeeBet.Repositories\Tgs.GameRecord.YeeBet.Repositories.csproj", "{CB0081D2-534B-4F60-AF9F-D40AF5DA7158}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{448ED50D-7677-407F-8DDD-43333B0BCDBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{448ED50D-7677-407F-8DDD-43333B0BCDBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{448ED50D-7677-407F-8DDD-43333B0BCDBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB0081D2-534B-4F60-AF9F-D40AF5DA7158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB0081D2-534B-4F60-AF9F-D40AF5DA7158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB0081D2-534B-4F60-AF9F-D40AF5DA7158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB0081D2-534B-4F60-AF9F-D40AF5DA7158}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

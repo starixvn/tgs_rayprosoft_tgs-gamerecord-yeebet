@@ -5,11 +5,6 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServerGarbageCollection>true</ServerGarbageCollection>
-		<UserSecretsId>d5640a86-5341-4ed7-8fbc-3242b28139ce</UserSecretsId>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<NoWarn>$(NoWarn);1591;0063</NoWarn>
 	</PropertyGroup>
@@ -34,6 +29,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Tgs.GameRecord.YeeBet.Common\Tgs.GameRecord.YeeBet.Common.csproj" />
 		<ProjectReference Include="..\Tgs.GameRecord.YeeBet.Core\Tgs.GameRecord.YeeBet.Core.csproj" />
+		<ProjectReference Include="..\Tgs.GameRecord.YeeBet.Repositories\Tgs.GameRecord.YeeBet.Repositories.csproj" />
 	</ItemGroup>
 
 </Project>
