@@ -14,7 +14,6 @@ public class SchedulePullRecordCommandServiceUnitTest
 	public async Task Normal_Process()
 	{
 		var fakeLogger = NullLogger<SchedulePullRecordCommandService>.Instance;
-		var fakeScheduleLocking = Substitute.For<IScheduleLocking>();
 		var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
 		var fakeService = Substitute.For<ICommandService<HandleRecordCommand>>();
 
@@ -22,11 +21,6 @@ public class SchedulePullRecordCommandServiceUnitTest
 			ApiUrl: new("http://api.98kbus.top/"),
 			AppId: "xtdA15OTVGEP",
 			SecretKey: "298511c51d785332d8d279998b79cd3c");
-
-		_ = fakeScheduleLocking.LockingAsync(
-			Arg.Is(command.AppId),
-			Arg.Any<CancellationToken>())
-			.Returns(true);
 
 		var gameRecords = new GameRecordInfo[] {
 			new()
@@ -46,22 +40,19 @@ public class SchedulePullRecordCommandServiceUnitTest
 				ExternalGameId = "12"
 			}};
 
-		_ = fakeClient
-			.GameRecordAsync(
-				Arg.Is(command.ApiUrl),
-				Arg.Is(command.AppId),
-				Arg.Is(command.SecretKey),
-				2000
-			).Returns(gameRecords.ToAsyncEnumerable());
+		_ = fakeClient.GameRecordAsync(
+			apiUrl: Arg.Is(command.ApiUrl),
+			appId: Arg.Is(command.AppId),
+			secretKey: Arg.Is(command.SecretKey),
+			size: 2000)
+			.Returns(gameRecords.ToAsyncEnumerable());
 
-		_ = fakeService
-		  .ExecuteAsync(
-			  Arg.Any<HandleRecordCommand>())
-		  .Returns(ValueTask.CompletedTask);
+		_ = fakeService.ExecuteAsync(
+			command: Arg.Any<HandleRecordCommand>())
+			.Returns(ValueTask.CompletedTask);
 
 		var sut = new SchedulePullRecordCommandService(
 			fakeLogger,
-			fakeScheduleLocking,
 			fakeClient,
 			fakeService);
 

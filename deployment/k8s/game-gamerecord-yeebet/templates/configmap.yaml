@@ -20,7 +20,8 @@ data:
       },
       "GameRecord": {
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
-        "GameInterfaceBaseUrl": "dns:///game-gameinterface-yeebet:9090/"
+        "GameInterfaceClientBaseUrl": "dns:///game-gameinterface-yeebet:9090/",
+        "GameRecordHandleClientBaseUrl": "http://game-gamerecord-handle/"
       }
     }
   otel-collector-config.yaml: |

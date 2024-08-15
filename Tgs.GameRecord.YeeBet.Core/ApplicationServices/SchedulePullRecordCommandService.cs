@@ -1,69 +1,67 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Tgs.GameInterface.YeeBet.Client;
+using Tgs.GameInterface.YeeBet.Protos;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.YeeBet.Core.ApplicationServices;
 
 internal class SchedulePullRecordCommandService(
 	ILogger<SchedulePullRecordCommandService> logger,
-	IScheduleLocking scheduleLocking,
 	IGameInterfaceYeeBetClient client,
 	ICommandService<HandleRecordCommand> service) : ICommandService<SchedulePullRecordCommand>
 {
 	public async ValueTask ExecuteAsync(SchedulePullRecordCommand command, CancellationToken cancellationToken = default)
 	{
-		if (!await scheduleLocking.LockingAsync(
-			command.AppId,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false))
+		IEnumerable<GameRecordInfo> gameRecords;
+		do
 		{
-			logger.LogWarning("LogOn:{logOn} Message: This AppId({appId}) has been locked.", DateTime.Now.ToString("o"), command.AppId);
-		}
-
-		try
-		{
-			var gameHistorys = await client
-				.GameRecordAsync(
-				apiUrl: command.ApiUrl,
-				appId: command.AppId,
-				secretKey: command.SecretKey,
-				size: 2000,
-				cancellationToken: cancellationToken)
-				.ToArrayAsync(cancellationToken: cancellationToken)
-				.ConfigureAwait(false);
-
-			logger.LogInformation("LogOn:{logOn} | Action:GameRecordAsync | Response:{response}",
-				DateTime.UtcNow.ToString("O"),
-				JsonSerializer.Serialize(gameHistorys));
-
-			if (gameHistorys.Length == 0)
-				return;
+			gameRecords = await client.GameRecordAsync(
+			   apiUrl: command.ApiUrl,
+			   appId: command.AppId,
+			   secretKey: command.SecretKey,
+			   size: 2000,
+			   cancellationToken: cancellationToken)
+			   .ToArrayAsync(cancellationToken: cancellationToken)
+			   .ConfigureAwait(false)
+			   ?? Enumerable.Empty<GameRecordInfo>();
 
 			var externalRoundIds = new List<string>();
 
-			foreach (var gameHistory in gameHistorys)
+			foreach (var gameRecord in gameRecords)
 			{
 				try
 				{
 					await service
 						.ExecuteAsync(
-						command: new HandleRecordCommand(Record: gameHistory),
+						command: new HandleRecordCommand(Record: gameRecord),
 						cancellationToken: cancellationToken)
 						.ConfigureAwait(false);
 
-					externalRoundIds.Add(gameHistory.ExternalRoundId);
+					externalRoundIds.Add(gameRecord.ExternalRoundId);
 				}
 				catch (Exception ex)
 				{
-					logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
+					logger.LogError(ex, "{logError}",
+						JsonSerializer.Serialize(new
+						{
+							LogOn = DateTime.Now.ToString("u"),
+							Data = new
+							{
+								gameRecord.PlayerCode,
+								gameRecord.ExternalRoundId,
+								gameRecord.ExternalGameId,
+								ExternalCreatedOn = gameRecord.ExternalCreatedOn.ToDateTimeOffset(),
+								ExternalClosedOn = gameRecord.ExternalClosedOn.ToDateTimeOffset()
+							},
+							Message = "An exception occurred in this game wager."
+						}));
 				}
 			}
 
 			if (externalRoundIds.Count != 0)
 			{
-				_ = await client
-					.GameRecordMarkAsync(
+				_ = await client.GameRecordMarkAsync(
 					apiUrl: command.ApiUrl,
 					appId: command.AppId,
 					secretKey: command.SecretKey,
@@ -71,17 +69,6 @@ internal class SchedulePullRecordCommandService(
 					cancellationToken: cancellationToken)
 					.ConfigureAwait(false);
 			}
-		}
-		catch (Exception ex)
-		{
-			logger.LogError(ex, "LogOn:{logOn} Message: An exception occurs.({command})", DateTime.Now.ToString("o"), command);
-		}
-		finally
-		{
-			_ = await scheduleLocking.UnlockedAsync(
-				appId: command.AppId,
-				cancellationToken: cancellationToken)
-				.ConfigureAwait(false);
-		}
+		} while (!gameRecords.Any());
 	}
 }

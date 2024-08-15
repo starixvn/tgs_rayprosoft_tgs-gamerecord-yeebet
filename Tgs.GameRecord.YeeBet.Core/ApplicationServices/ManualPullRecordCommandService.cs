@@ -15,105 +15,50 @@ internal class ManualPullRecordCommandService(
 	{
 		var pageIndex = 0;
 		var pageSize = 2000;
+		GameRecordInfoReply reply;
 
-		logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
-			DateTime.UtcNow.ToString("O"),
-			JsonSerializer.Serialize(new
-			{
-				command.ApiUrl,
-				command.AppId,
-				command.SecretKey,
-				command.StartTime,
-				command.EndTime,
-				pageIndex,
-				pageSize
-			}));
-
-		var reply = await client.GameRecordInquireAsync(
-			apiUrl: command.ApiUrl,
-			appId: command.AppId,
-			secretKey: command.SecretKey,
-			beginTime: command.StartTime,
-			endTime: command.EndTime,
-			pageSize: pageSize,
-			pageIndex: pageIndex,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-
-		logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Response:{response}",
-			DateTime.UtcNow.ToString("O"),
-			JsonSerializer.Serialize(reply));
-
-		if (reply is null)
-			return;
-
-		if (reply.ArraySize is 0)
-			return;
-
-		foreach (var gameHistory in reply.Items ?? Enumerable.Empty<GameRecordInfo>())
+		do
 		{
-			try
-			{
-				await service
-					.ExecuteAsync(
-					command: new HandleRecordCommand(Record: gameHistory),
-					cancellationToken: cancellationToken)
-					.ConfigureAwait(false);
-			}
-			catch (Exception ex)
-			{
-				logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
-			}
-		}
-
-		while ((pageIndex + 1) * pageSize < reply.Total)
-		{
-			pageIndex++;
-
-			logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync | Request:{request}",
-				DateTime.UtcNow.ToString("O"),
-				JsonSerializer.Serialize(new
-				{
-					command.ApiUrl,
-					command.AppId,
-					command.SecretKey,
-					command.StartTime,
-					command.EndTime,
-					pageIndex,
-					pageSize,
-				}));
-
-			reply = await client
-				.GameRecordInquireAsync(
-					command.ApiUrl,
-					command.AppId,
-					command.SecretKey,
-					command.StartTime,
-					command.EndTime,
-					pageSize: pageSize,
-					pageIndex: pageIndex,
-					cancellationToken)
+			reply = await client.GameRecordInquireAsync(
+				apiUrl: command.ApiUrl,
+				appId: command.AppId,
+				secretKey: command.SecretKey,
+				beginTime: command.StartTime,
+				endTime: command.EndTime,
+				pageSize: pageSize,
+				pageIndex: pageIndex,
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			logger.LogInformation("LogOn:{logOn} | Action:GameRecordInquireAsync |  Response:{response}",
-				DateTime.UtcNow.ToString("O"),
-				JsonSerializer.Serialize(reply));
-
-			foreach (var gameHistory in reply.Items ?? Enumerable.Empty<GameRecordInfo>())
+			foreach (var gameRecord in reply.Items ?? Enumerable.Empty<GameRecordInfo>())
 			{
 				try
 				{
-					await service
-						.ExecuteAsync(
-						command: new HandleRecordCommand(Record: gameHistory),
+					await service.ExecuteAsync(
+						command: new HandleRecordCommand(Record: gameRecord),
 						cancellationToken: cancellationToken)
 						.ConfigureAwait(false);
 				}
 				catch (Exception ex)
 				{
-					logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({gameRecord})", DateTime.Now.ToString("o"), gameHistory);
+					logger.LogError(ex, "{logError}",
+						JsonSerializer.Serialize(new
+						{
+							LogOn = DateTime.Now.ToString("u"),
+							Data = new
+							{
+								gameRecord.PlayerCode,
+								gameRecord.ExternalRoundId,
+								gameRecord.ExternalGameId,
+								ExternalCreatedOn = gameRecord.ExternalCreatedOn.ToDateTimeOffset(),
+								ExternalClosedOn = gameRecord.ExternalClosedOn.ToDateTimeOffset()
+							},
+							Message = "An exception occurred in this game wager."
+						}));
 				}
 			}
-		}
+
+			pageIndex++;
+		} while (!(reply.Items ?? Enumerable.Empty<GameRecordInfo>()).Any());
 	}
 }

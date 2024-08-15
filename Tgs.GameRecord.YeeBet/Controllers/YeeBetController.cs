@@ -16,18 +16,6 @@ public class YeeBetController : ControllerBase
 	/// <param name="messageSender">The message sender.</param>
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "apiUrl": "http://api.98kbus.top/",
-	///             "appId": "xtdA15OTVGEP",
-	///             "secretKey": "4885366DF30D880224FF6AA46FBDE4F0",
-	///             "startTime": "2023-04-10T02:39:08+08:00",
-	///             "endTime": "2023-04-10T02:39:08+08:00"
-	///         }
-	/// </remarks>
 	[HttpPost("manual")]
 	public ValueTask GameRecordManualAsync(
 		[FromServices] IMessageSender messageSender,
@@ -43,16 +31,6 @@ public class YeeBetController : ControllerBase
 	/// <param name="messageSender">The message sender.</param>
 	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "apiUrl": "http://api.98kbus.top/",
-	///             "appId": "xtdA15OTVGEP",
-	///             "secretKey": "4885366DF30D880224FF6AA46FBDE4F0"
-	///         }
-	/// </remarks>
 	[HttpPost("schedule")]
 	public ValueTask GameRecordScheduleAsync(
 		[FromServices] IMessageSender messageSender,
