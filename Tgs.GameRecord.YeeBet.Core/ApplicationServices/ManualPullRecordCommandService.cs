@@ -30,35 +30,37 @@ internal class ManualPullRecordCommandService(
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			foreach (var gameRecord in reply.Items ?? Enumerable.Empty<GameRecordInfo>())
+			if (reply is not null)
 			{
-				try
+				foreach (var gameRecord in reply.Items ?? Enumerable.Empty<GameRecordInfo>())
 				{
-					await service.ExecuteAsync(
-						command: new HandleRecordCommand(Record: gameRecord),
-						cancellationToken: cancellationToken)
-						.ConfigureAwait(false);
-				}
-				catch (Exception ex)
-				{
-					logger.LogError(ex, "{logError}",
-						JsonSerializer.Serialize(new
-						{
-							LogOn = DateTime.Now.ToString("u"),
-							Data = new
+					try
+					{
+						await service.ExecuteAsync(
+							command: new HandleRecordCommand(Record: gameRecord),
+							cancellationToken: cancellationToken)
+							.ConfigureAwait(false);
+					}
+					catch (Exception ex)
+					{
+						logger.LogError(ex, "{logError}",
+							JsonSerializer.Serialize(new
 							{
-								gameRecord.PlayerCode,
-								gameRecord.ExternalRoundId,
-								gameRecord.ExternalGameId,
-								ExternalCreatedOn = gameRecord.ExternalCreatedOn.ToDateTimeOffset(),
-								ExternalClosedOn = gameRecord.ExternalClosedOn.ToDateTimeOffset()
-							},
-							Message = "An exception occurred in this game wager."
-						}));
+								LogOn = DateTime.Now.ToString("u"),
+								Data = new
+								{
+									gameRecord.PlayerCode,
+									gameRecord.ExternalRoundId,
+									gameRecord.ExternalGameId,
+									ExternalCreatedOn = gameRecord.ExternalCreatedOn.ToDateTimeOffset(),
+									ExternalClosedOn = gameRecord.ExternalClosedOn.ToDateTimeOffset()
+								},
+								Message = "An exception occurred in this game wager."
+							}));
+					}
 				}
 			}
-
 			pageIndex++;
-		} while (!(reply.Items ?? Enumerable.Empty<GameRecordInfo>()).Any());
+		} while (reply is not null && (reply.Items ?? Enumerable.Empty<GameRecordInfo>()).Any());
 	}
 }

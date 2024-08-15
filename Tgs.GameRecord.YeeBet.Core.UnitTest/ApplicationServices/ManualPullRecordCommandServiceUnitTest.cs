@@ -47,15 +47,14 @@ public class ManualPullRecordCommandServiceUnitTest
 			ExternalGameId = "12"
 		});
 
-		_ = fakeClient
-			.GameRecordInquireAsync(
-				apiUrl: Arg.Is(command.ApiUrl),
-				appId: Arg.Is(command.AppId),
-				secretKey: Arg.Is(command.SecretKey),
-				beginTime: Arg.Is(command.StartTime),
-				endTime: Arg.Is(command.EndTime),
-				pageSize: 2000,
-				pageIndex: 0)
+		_ = fakeClient.GameRecordInquireAsync(
+			apiUrl: Arg.Is(command.ApiUrl),
+			appId: Arg.Is(command.AppId),
+			secretKey: Arg.Is(command.SecretKey),
+			beginTime: Arg.Is(command.StartTime),
+			endTime: Arg.Is(command.EndTime),
+			pageSize: 2000,
+			pageIndex: 0)
 			.Returns(reply);
 
 		var sut = new ManualPullRecordCommandService(
