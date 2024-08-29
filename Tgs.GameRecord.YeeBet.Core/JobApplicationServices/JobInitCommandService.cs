@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using Hangfire;
 using Hangfire.Storage;
@@ -32,7 +33,12 @@ internal class JobInitCommandService(
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false))
 			{
-				logger.LogWarning("LogOn:{logOn} Message:進行初始化動作，已經有其他服務進行", DateTime.Now.ToString("o"));
+				logger.LogWarning("{logWarning}",
+					JsonSerializer.Serialize(new
+					{
+						LogOn = DateTime.Now.ToString("u"),
+						Message = "This game provider configuration schedule has been initialized."
+					}));
 				return;
 			}
 
@@ -113,7 +119,12 @@ internal class JobInitCommandService(
 		}
 		catch (Exception ex)
 		{
-			logger.LogError(ex, "LogOn:{logOn} Message:遊戲廠商初始化排程發生例外", DateTime.Now.ToString("o"));
+			logger.LogError(ex, "{logError}",
+				JsonSerializer.Serialize(new
+				{
+					LogOn = DateTime.Now.ToString("u"),
+					Message = "The game provider configuration schedule initialization failed."
+				}));
 		}
 		finally
 		{
