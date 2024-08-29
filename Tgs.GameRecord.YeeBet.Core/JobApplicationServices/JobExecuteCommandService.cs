@@ -13,19 +13,32 @@ internal class JobExecuteCommandService(
 {
 	public ValueTask ExecuteAsync(JobExecuteCommand command, CancellationToken cancellationToken = default)
 	{
-		var parameters = new YeeBetGameRecordScheduleMessage
+		var message = new YeeBetGameRecordScheduleMessage
 		{
 			ApiUrl = command.ApiUrl,
 			AppId = command.AppId,
 			SecretKey = command.SecretKey,
 		};
 
-		logger.LogDebug("LogOn:{logOn} Parameters:{parameters}", DateTime.Now.ToString("u"), parameters);
+		logger.LogInformation("{logInformation}",
+			JsonSerializer.Serialize(new
+			{
+				LogOn = DateTime.Now.ToString("u"),
+				Subject = YeeBetNatsConst.SchedulePublish,
+				Data = new
+				{
+					message.ApiUrl,
+					message.AppId,
+					message.SecretKey
+				},
+				Message = "This message publishing handler."
+			}));
+
 
 		return messageSender
 			.PublishAsync(
 			subject: YeeBetNatsConst.SchedulePublish,
-			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(parameters)),
+			data: JsonSerializer.SerializeToUtf8Bytes(message),
 			cancellationToken: cancellationToken);
 	}
 }
