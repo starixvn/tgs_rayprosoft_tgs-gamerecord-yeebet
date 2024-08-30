@@ -22,7 +22,7 @@ public class YeeBetController : ControllerBase
 		YeeBetGameRecordManualMessage source)
 		=> messageSender.PublishAsync(
 			subject: YeeBetNatsConst.ManualPublish,
-			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(source)),
+			data: JsonSerializer.SerializeToUtf8Bytes(source),
 			cancellationToken: HttpContext.RequestAborted);
 
 	/// <summary>
@@ -37,6 +37,6 @@ public class YeeBetController : ControllerBase
 		YeeBetGameRecordScheduleMessage source)
 		=> messageSender.PublishAsync(
 			subject: YeeBetNatsConst.SchedulePublish,
-			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(source)),
+			data: JsonSerializer.SerializeToUtf8Bytes(source),
 			cancellationToken: HttpContext.RequestAborted);
 }
