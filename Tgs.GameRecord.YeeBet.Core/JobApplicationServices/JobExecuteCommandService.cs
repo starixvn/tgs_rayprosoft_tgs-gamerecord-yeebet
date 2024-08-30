@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Tgs.GameRecord.YeeBet.Common;
 using Tgs.ServiceUtility;
@@ -34,9 +33,7 @@ internal class JobExecuteCommandService(
 				Message = "This message publishing handler."
 			}));
 
-
-		return messageSender
-			.PublishAsync(
+		return messageSender.PublishAsync(
 			subject: YeeBetNatsConst.SchedulePublish,
 			data: JsonSerializer.SerializeToUtf8Bytes(message),
 			cancellationToken: cancellationToken);
